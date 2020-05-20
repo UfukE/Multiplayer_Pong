@@ -1,10 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Pong</title>
+    <link rel="stylesheet" type="text/css" href="css.css">
 </head>
+
 <body>
-    
+    <div id="main" class="wrapper">
+        <h2 id="create-lobby">
+            <a href="#" class="effect-underline detext">Create Lobby</a>
+        </h2>
+        <br>
+        <h2 id="join-lobby">
+            <a href="#" class="effect-underline detext">Join Lobby</a>
+        </h2>
+    </div>
+    <canvas id="screen" style="background-color: black; visibility: hidden;" width="600" height="400"></canvas>
+    <script src="socket.io/socket.io.js" defer></script>
+    <script src="index.js"></script>
 </body>
+
 </html>
