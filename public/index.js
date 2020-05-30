@@ -56,7 +56,7 @@ document.getElementById("join-lobby").onclick = function(e){
         }
     }
 }
-let reverse = 1;
+let reversed = false;
 const canvas = document.getElementById("screen");
 const context = canvas.getContext("2d");
 const fps = 30;
@@ -74,12 +74,21 @@ class Paddle {
         this.color = color;
         this.speed = speed;
         this.reverse = reverse;
+        this.score = 0;
     }
 
     render(s){
         s.save();
         s.fillStyle = this.color;
         s.fillRect(this.x-this.w/2,this.y-this.h/2,this.w,this.h);
+        s.font = "20px Arial";
+        s.fillStyle = "white";
+        if(reversed){
+            s.translate(canvas.width,0)
+            s.scale(-1,1);
+            //s.rotate(Math.PI);
+        }
+        s.fillText(this.score,this.x,40);
         s.restore();
     }
 
@@ -125,6 +134,7 @@ async function setup(players){
     let info = players.INFO;
     delete players.INFO;
     if (players["player1"].id==info.selfID){
+        reversed = true
         context.translate(canvas.width, 0);
         context.scale(-1,1);
     };
@@ -150,8 +160,11 @@ async function setup(players){
         players.player2.paddle.y = ps.paddle.y;
     })
 
+    socket.on("SCORE_UPDATE",posx=>{
+        (reversed ? Object.values(players).find(pl=>pl.paddle.x!=posx) : Object.values(players).find(pl=>pl.paddle.x==posx)).paddle.score++;
+    })
 
-    return (void 0);
+    return (void 54);
 }
 
 

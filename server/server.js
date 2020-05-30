@@ -24,13 +24,26 @@ const Ball = function()
         this.x += this.velx;
         this.y += this.vely;
     }
-    this.collision = function(paddles){
+    this.collision = function(paddles,owners){
         let pl = paddles.find(e=>e.x==30); 
         let pr = paddles.find(e=>e!=pl);
         //console.log("Pl:",pl,"\nPr: ",pr,"\nBall: ",this);
-        if(this.x+this.w/2 > pr.x+pr.w/2 || this.x-this.w/2 < pl.x-pl.w/2) {
+        if(this.x+this.w/2 > pr.x+pr.w/2) {
+            /*pl.score++;
+            console.log("Right: ", pr.score ,"\nLeft: ", pl.score)*/
+            io.sockets.connected[owners.selfID] && io.sockets.connected[owners.selfID].emit("SCORE_UPDATE",pl.x);
+            io.sockets.connected[owners.lobbyID] && io.sockets.connected[owners.lobbyID].emit("SCORE_UPDATE",pl.x);
             return new Ball();
         }
+
+        if(this.x-this.w/2 < pl.x-pl.w/2){
+            /*pr.score++;
+            console.log("Right: ", pr.score ,"\nLeft: ", pl.score)*/
+            io.sockets.connected[owners.selfID] && io.sockets.connected[owners.selfID].emit("SCORE_UPDATE",pr.x);
+            io.sockets.connected[owners.lobbyID] && io.sockets.connected[owners.lobbyID].emit("SCORE_UPDATE",pr.x);
+            return new Ball();
+        }
+
         if(this.y+this.h/2 >= 400) this.vely=-Math.abs(this.vely);
         if(this.y-this.h/2 <= 0) this.vely=Math.abs(this.vely);
         let pad = paddles.find(paddle=>this.y+this.h/2 > paddle.y-paddle.h/2 && this.y-this.h/2 < paddle.y+paddle.h/2 && (Math.abs((this.x-this.w/2)-(paddle.x+paddle.w/2)) < 2 || Math.abs((this.x+this.w/2)-(paddle.x-paddle.w/2)) < 2 ));
@@ -84,7 +97,7 @@ io.on("connection",socket=>{
 
     socket.on("BALL_COLLISION",ar=>{
         joinIDs.forEach(e=>{
-            e.ball = e.ball.collision(ar);
+            e.ball = e.ball.collision(ar,e);
             io.sockets.connected[e.selfID] && io.sockets.connected[e.selfID].emit("BALL",e.ball);
             io.sockets.connected[e.lobbyID] && io.sockets.connected[e.lobbyID].emit("BALL",e.ball);
         });
