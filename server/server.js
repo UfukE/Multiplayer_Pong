@@ -37,7 +37,7 @@ const Ball = function()
         if(pad){  
             let ofs = pad.x==30 ? 45 : 135;
             this.angle = pmap(this.y,pad.y-pad.h/2,pad.y+pad.h/2,-ofs,ofs)
-            this.velx = this.speed * Math.cos(this.angle/180*Math.PI) * (this.reverse ? -1 : 1);
+            this.velx = this.speed * Math.cos(this.angle/180*Math.PI) * (pad.reverse ? 1 : -1);
             this.vely = this.speed * Math.sin(this.angle/180*Math.PI);;
         }
         return this;
