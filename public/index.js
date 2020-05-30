@@ -14,7 +14,7 @@ socket.on("JH",players=>{
 const globalIntervals = [];
 document.getElementById("create-lobby").onclick = function(e){
     let clickfunc = this.onclick;
-    this.firstElementChild.innerText = socket.id;
+    this.firstElementChild.innerText = socket.id.slice(2,8);
     document.getElementById("join-lobby").style.visibility = "hidden";
 
     const waiting = document.createElement("a");
@@ -23,7 +23,7 @@ document.getElementById("create-lobby").onclick = function(e){
     waiting.style.cursor = "default";
     waiting.innerText = "Waiting for player2 to join";
     let h = document.getElementById("main").appendChild(document.createElement("h2").appendChild(waiting).parentNode);
-    globalIntervals.push(setInterval(()=>socket.emit("LOBBY_WAIT_PLAYER",socket.id),2000));
+    globalIntervals.push(setInterval(()=>socket.emit("LOBBY_WAIT_PLAYER",socket.id.slice(2,8)),2000));
 
 
     this.onclick = function(e){
