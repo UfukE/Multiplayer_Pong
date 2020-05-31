@@ -14,7 +14,7 @@ socket.on("JH",players=>{
 const globalIntervals = [];
 document.getElementById("create-lobby").onclick = function(e){
     let clickfunc = this.onclick;
-    this.firstElementChild.innerText = socket.id.slice(2,8);
+    this.firstElementChild.innerText = socket.id;
     document.getElementById("join-lobby").style.visibility = "hidden";
 
     const waiting = document.createElement("a");
@@ -23,7 +23,7 @@ document.getElementById("create-lobby").onclick = function(e){
     waiting.style.cursor = "default";
     waiting.innerText = "Waiting for player2 to join";
     let h = document.getElementById("main").appendChild(document.createElement("h2").appendChild(waiting).parentNode);
-    globalIntervals.push(setInterval(()=>socket.emit("LOBBY_WAIT_PLAYER",socket.id.slice(2,8)),2000));
+    globalIntervals.push(setInterval(()=>socket.emit("LOBBY_WAIT_PLAYER",socket.id),2000));
 
 
     this.onclick = function(e){
@@ -88,7 +88,7 @@ class Paddle {
             s.scale(-1,1);
             //s.rotate(Math.PI);
         }
-        s.fillText(this.score,this.x,40);
+        s.fillText(this.score,this.x+60*(this.x==30?1:-1),40);
         s.restore();
     }
 
@@ -156,6 +156,9 @@ async function setup(players){
 
     }
 
+    //context.moveTo(canvas.width/2,0);
+    //context.lineTo(canvas.width/2,canvas.height);
+
     socket.on("PLAYER_RECIEVED",ps=>{
         players.player2.paddle.y = ps.paddle.y;
     })
@@ -175,6 +178,7 @@ function draw(players){
         players[player].paddle.render(context);
     }
     context.restore();
+    //context.stroke();
     socket.emit("BALL_COLLISION",[...Object.values(players).map(e=>e.paddle)])
     socket.emit("BALL_UPDATE",true);
     ball.render(context);
